@@ -246,7 +246,13 @@ local function _receive_headers(sock)
 
         for key, val in str_gmatch(line, "([%w%-]+)%s*:%s*(.+)") do
             if headers[key] then
-                headers[key] = headers[key] .. ", " .. tostring(val)
+                if type(headers[key]) == "table" then
+		    table.insert(headers[key], tostring(val))
+		else
+		    headers[key] = { headers[key] }
+
+		    table.insert(headers[key], tostring(val))
+		end
             else
                 headers[key] = tostring(val)
             end
